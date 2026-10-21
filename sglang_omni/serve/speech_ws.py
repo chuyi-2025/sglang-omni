@@ -22,6 +22,7 @@ from sglang_omni.client.audio import (
     encode_pcm,
     select_audio_delta,
 )
+from sglang_omni.sampling.seed import new_random_sampling_seed
 from sglang_omni.serve.protocol import CreateSpeechRequest, SpeechStreamSessionConfig
 from sglang_omni.serve.speech_errors import (
     SpeechAPIError,
@@ -305,6 +306,8 @@ class SpeechWebSocketSession:
         }
         self.config_prepared_request = prepared
         config = config.model_copy(update=prepared_updates)
+        if config.seed is None:
+            config.seed = new_random_sampling_seed()
         return config
 
     async def generate_sentence(self, sentence: str) -> None:

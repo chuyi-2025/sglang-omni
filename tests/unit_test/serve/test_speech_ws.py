@@ -758,8 +758,9 @@ def test_speech_websocket_default_config_leaves_sampling_fields_unset() -> None:
             "top_p",
             "top_k",
             "repetition_penalty",
-            "seed",
         } & set(params)
+        assert params["seed"] == session.config.seed
+        assert gen_req.metadata["tts_params"]["seed"] == session.config.seed
 
     asyncio.run(run())
 
@@ -815,7 +816,8 @@ def test_speech_websocket_passes_the_set_sampling_fields() -> None:
         params = Client.build_omni_request(gen_req).params
         assert params["temperature"] == 0.7
         assert params["top_k"] == 20
-        assert not {"top_p", "repetition_penalty", "seed"} & set(params)
+        assert params["seed"] == session.config.seed
+        assert not {"top_p", "repetition_penalty"} & set(params)
 
     asyncio.run(run())
 
